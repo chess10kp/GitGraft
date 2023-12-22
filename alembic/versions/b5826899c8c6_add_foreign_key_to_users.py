@@ -19,18 +19,29 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table("expenses_neo", 
-        sa.Column("id", sa.Integer),
-        sa.Column("amount", sa.Integer),
-        sa.Column("description", sa.String()),
-        sa.Column("user_id", sa.Integer, sa.ForeignKey('spender.id')))
-    op.execute('INSERT INTO expenses_neo (amount , description) SELECT amount, description FROM expenses')
+    op.create_table(
+        "expenses_neo",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("amount", sa.Integer, nullable=False),
+        sa.Column("description", sa.String(), nullable=False),
+        sa.Column(
+            "fk_expenses_id_spenders",
+            sa.Integer,
+            sa.ForeignKey("spender.id"),
+            nullable=False,
+        ),
+    )
+    op.execute(
+        "INSERT INTO expenses_neo (amount , description) SELECT amount, description FROM expenses"
+    )
     op.drop_table("expenses")
     op.rename_table("expenses_neo", "expenses")
 
 
 def downgrade() -> None:
     op.create_table("expenses_retro")
-    op.execute('INSERT INTO expenses_retro (amount, description) SELECT amount,description FROM expenses')
+    op.execute(
+        "INSERT INTO expenses_retro (amount, description) SELECT amount,description FROM expenses"
+    )
     op.drop_table("expenses")
     op.rename_table("expenses_retro", "expenses")

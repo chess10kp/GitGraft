@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 class ExpenseBase(BaseModel):
     amount: int = Field(ge=0)
     description: str | None = Field(min_length=1)
+
+class ExpenseCreateNew(ExpenseBase):
     timestamp: datetime | None = None
 
 
@@ -19,7 +21,7 @@ class Expense(ExpenseBase):
 
 
 class SpenderBase(BaseModel):
-    email: str
+    username: str
 
 
 class SpenderCreateNew(SpenderBase):
