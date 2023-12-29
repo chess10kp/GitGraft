@@ -1,10 +1,7 @@
-from datetime import date
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
-from sqlalchemy.orm import Session
-from starlette.requests import HTTPConnection
 
 from src.app import crud, models, schemas  # noqa: None
 from src.app.database import SessionLocal, engine
@@ -24,17 +21,17 @@ def get_db():
         db.close()
 
 
-@router.get("/expenses/", response_model=List[schemas.Expense])
+@router.get("/spender/{spender_id}/expenses", response_model=List[schemas.Expense])
 def get_expenses(skip: int = 0, limit: int = 10, db=Depends(get_db)):
     return crud.get_expenses(db, skip, limit)
 
 
-@router.get("/expenses/{spender_id}", response_model=schemas.Expense)
-def get_expense_by_user_id(spender_id: int, db=Depends(get_db)):
+@router.get("/spender/{spender_id}/expenses/{expense_id}", response_model=schemas.Expense)
+def get_expense_by_user_id(spender_id: int, expense_id: int,  db=Depends(get_db)):
     spender_exists = crud.get_spender_by_id(db, spender_id)
     if not spender_exists:
         raise HTTPException(404, "User to link to does not exist")
-    return crud.get_expense_by_user_id(db, spender_id)
+    return crud.get_expense_by_id(db, expense_id)
 
 
 @router.post("/spender/{spender_id}/expenses/new")
@@ -46,8 +43,16 @@ def insert_expense(
         raise HTTPException(400, "User to link to does not exist")
     return crud.create_expense(db, expense, spender_id)
 
-
-# TODO: check all get routes
+@router.delete("/spender/{spender_id}/expenses/delete/{expense_id}")
+def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)): 
+    spender = crud.get_spender_by_id(db, spender_id)
+    if not spender : 
+        raise HTTPException(404, "User to delete expense from not found")
+    expense = crud.get_expense_by_id(db, expense_id)
+    if not expense : 
+        raise HTTPException(404, "Expense to delete not found")
+    expense = crud.delete_expense(db, expense_id)
+    return expense
 
 # TODO:
 # @router.put("/expenses/update")
@@ -57,14 +62,6 @@ def insert_expense(
 #     description: str | None = None,
 # ) -> List[Expense]:
 #     return data
-
-
-# TODO:
-# @router.delete("/expenses/delete/")
-# async def delete_expense(
-#     id: int = Query(ge=0, min_length=1, example=3)
-# ) -> Expense | str:
-#     deleted_expense = crud.d
 
 
 @router.get("/spender/", response_model=List[schemas.Spender])
