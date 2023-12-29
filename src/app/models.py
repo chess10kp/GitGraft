@@ -19,6 +19,6 @@ class Expense(Base):
     amount = Column(Integer, index=True)
     description = Column(String, index=False)
     timestamp = Column(String, index=True)
-    spender_id = Column(Integer, ForeignKey("users.id"))
+    fk_expenses_id_spenders = Column(Integer, ForeignKey("spenders.id"))
 
-    spender = relationship("Spenders", back_populates="expenses")
+    spender = relationship("Spender", back_populates="expenses")

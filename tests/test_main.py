@@ -1,5 +1,6 @@
-from typing_extensions import assert_type
 from fastapi.testclient import TestClient
+from typing_extensions import assert_type
+
 from src.app.main import app
 
 client = TestClient(app)

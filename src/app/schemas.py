@@ -14,10 +14,10 @@ class ExpenseCreateNew(ExpenseBase):
 
 class Expense(ExpenseBase):
     id: int
-    owner_id: int
+    fk_id_expenses: int
 
     class Config:
-        from_attributes = True
+        from_attributes = True #enable orm_mode
 
 
 class SpenderBase(BaseModel):

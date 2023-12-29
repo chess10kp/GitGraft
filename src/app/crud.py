@@ -1,24 +1,22 @@
 from datetime import datetime
-from os import sched_setscheduler
-from types import new_class
 from typing import List
-
-from sqlalchemy.orm import Session
 
 from . import models, schemas
 
 
-def get_user(db: Session, user_id: int) -> models.Spender | None:
+def get_spender_by_id(db, user_id: int) -> models.Spender | None:
     return db.query(models.Spender).filter(models.Spender.id == user_id).first()
 
 
-def get_users(
-    db: Session, skip: int = 0, limit: int = 10
-) -> List[models.Spender] | None:
+def get_spender_by_username(db, username: str) -> models.Spender | None:
+    return db.query(models.Spender).filter(models.Spender.username == username).first()
+
+
+def get_spenders(db, skip: int = 0, limit: int = 10) -> List[models.Spender] | None:
     return db.query(models.Spender).offset(skip).limit(limit).all()
 
 
-def create_spender(db: Session, spender: schemas.SpenderCreateNew):
+def create_spender(db, spender: schemas.SpenderCreateNew):
     new_pass = spender.password + "hash"  # TODO: improve hash with JWT
     new_spender = models.Spender(username=spender.username, password=new_pass)
     db.add(new_spender)
@@ -27,17 +25,17 @@ def create_spender(db: Session, spender: schemas.SpenderCreateNew):
     return new_spender
 
 
-def get_expenses(
-    db: Session, skip: int = 0, limit: int = 100
-) -> List[models.Expense] | None:
+def get_expenses(db, skip: int = 0, limit: int = 100) -> List[models.Expense] | None:
     return db.query(models.Expense).offset(skip).limit(limit).all()
 
 
-def get_expense(db: Session, expense_id: int) -> models.Expense | None:
-    return db.query(models.Expense).filter(models.Expense.id == expense_id).first()
+def get_expense_by_user_id(db, spender_id: int) -> models.Expense | None:
+    return db.query(models.Expense).filter(models.Expense.id == spender_id).first()
 
-def create_expense(db: Session, expense: schemas.ExpenseCreateNew): 
-    new_expense = models.Expense(amount=expense.amount, description=expense.description, timestamp=datetime.now())
+
+def create_expense(db, expense: schemas.ExpenseBase, spender_id: int):
+    expense.dict()["timestamp"] = datetime.now()
+    new_expense = models.Expense(**expense.dict(), fk_expenses_id_spenders=spender_id)
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)

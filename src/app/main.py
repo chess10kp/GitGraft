@@ -4,7 +4,7 @@ from src.app.routes import router
 
 app = FastAPI(
     title="Expense Tracker",
-    description="Expense Tracker using SQLite3",
+    description="Expense Tracker",
     version="0.0.1",
 )
 
