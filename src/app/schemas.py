@@ -19,7 +19,6 @@ class Expense(ExpenseBase):
     class Config:
         from_attributes = True #enable orm_mode
 
-
 class SpenderBase(BaseModel):
     username: str
 

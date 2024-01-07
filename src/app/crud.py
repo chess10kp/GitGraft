@@ -39,8 +39,9 @@ def create_spender(db, spender: schemas.SpenderCreateNew):
     db.refresh(new_spender)
     return new_spender
 
-def delete_spender(db, spender_id: int | str) -> dict: 
-    """ 
+
+def delete_spender(db, spender_id: int | str) -> dict:
+    """
     Delete a spender and all their expenses
     """
     expenses = db.query(models.Expense).filter(models.Expense.id == spender_id).all()
@@ -67,7 +68,7 @@ def get_expense_by_id(db, expense_id: int) -> models.Expense | None:
 
 
 def create_expense(db, expense: schemas.ExpenseBase, spender_id: int):
-    """ 
+    """
     Create a new expense
     """
     expense.dict()["timestamp"] = datetime.now()
@@ -77,9 +78,10 @@ def create_expense(db, expense: schemas.ExpenseBase, spender_id: int):
     db.refresh(new_expense)
     return new_expense
 
-def delete_expense(db, expense_id: int): 
+
+def delete_expense(db, expense_id: int):
     """
-    Delete an expense 
+    Delete an expense
     """
     expense = db.query(models.Expense).filter(models.Expense.id == expense_id).first()
     db.delete(expense)

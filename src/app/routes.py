@@ -21,13 +21,15 @@ def get_db():
         db.close()
 
 
-@router.get("/spender/{spender_id}/expenses", response_model=List[schemas.Expense])
+@router.get("/spender/{spender_id}/expenses")
 def get_expenses(skip: int = 0, limit: int = 10, db=Depends(get_db)):
     return crud.get_expenses(db, skip, limit)
 
 
-@router.get("/spender/{spender_id}/expenses/{expense_id}", response_model=schemas.Expense)
-def get_expense_by_user_id(spender_id: int, expense_id: int,  db=Depends(get_db)):
+@router.get(
+    "/spender/{spender_id}/expenses/{expense_id}"
+)
+def get_expense_by_user_id(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender_exists = crud.get_spender_by_id(db, spender_id)
     if not spender_exists:
         raise HTTPException(404, "User to link to does not exist")
@@ -43,16 +45,18 @@ def insert_expense(
         raise HTTPException(400, "User to link to does not exist")
     return crud.create_expense(db, expense, spender_id)
 
+
 @router.delete("/spender/{spender_id}/expenses/delete/{expense_id}")
-def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)): 
+def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender = crud.get_spender_by_id(db, spender_id)
-    if not spender : 
+    if not spender:
         raise HTTPException(404, "User to delete expense from not found")
     expense = crud.get_expense_by_id(db, expense_id)
-    if not expense : 
+    if not expense:
         raise HTTPException(404, "Expense to delete not found")
     expense = crud.delete_expense(db, expense_id)
     return expense
+
 
 # TODO:
 # @router.put("/expenses/update")
@@ -64,7 +68,7 @@ def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
 #     return data
 
 
-@router.get("/spender/", response_model=List[schemas.Spender])
+@router.get("/spender/", )
 def get_spender(db=Depends(get_db), limit: int = 10, skip: int = 0):
     spenders = crud.get_spenders(db, skip=skip, limit=limit)
     if not spenders:
