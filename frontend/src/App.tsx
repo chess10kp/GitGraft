@@ -5,6 +5,12 @@ import './App.css'
 import Form from './components/Form'
 import Expense from './components/Expense'
 
+type Expense = {
+  id: string // to use it as a key
+  description: string
+  amount: Number
+  timestamp: string
+}
 
 function App() {
   const [username, setUsername] = useState<string>("")
@@ -28,15 +34,12 @@ function App() {
       .then(expense => setSpenders(expense))
   }, [])
 
-  console.log(spenders)
   return (
     <div className='app'>
-      {spenders.map((spender) => (
+      <Form username={username} setUsername={setUsername} password={password} setPassword={setPassword}></Form>
+      {spenders.map((spender: Expense) => (
         <Expense key={spender.id} amount={spender.amount} expense={spender.description}></Expense>
       ))}
-      {username}
-      {password}
-      <Form username={username} setUsername={setUsername} password={password} setPassword={setPassword}></Form>
     </div>
   )
 }
