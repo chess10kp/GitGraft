@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import './App.css'
 
@@ -13,30 +13,40 @@ type Expense = {
 }
 
 function App() {
-  const [username, setUsername] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  const username = useRef("")
+  const password = useRef("")
   const [spenders, setSpenders] = useState([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 
-  function find_spenders() {
+  const find_spenders = async () => {
     try {
-      const response = fetch("http://localhost:8000/spender/0/expenses")
-        .then(res => res.json()
-        )
-      return response
+      const response = await fetch("http://localhost:8000/spender/1/expenses")
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.log("Error: ", error)
+    }
+  }
+
+  const onLoginHandler = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/login/${username.current.value}/${password.current.value}`)
+      const data = await response.json()
+      console.log(typeof(data))
     } catch (error) {
       console.log("Error: ", error)
     }
   }
 
   useEffect(() => {
-    let expenses = find_spenders()
+    find_spenders()
       .then(expense => setSpenders(expense))
   }, [])
 
   return (
     <div className='app'>
-      <Form username={username} setUsername={setUsername} password={password} setPassword={setPassword}></Form>
+      <Form username={username} password={password} clickHandler={onLoginHandler} ></Form>
       {spenders.map((spender: Expense) => (
         <Expense key={spender.id} amount={spender.amount} expense={spender.description}></Expense>
       ))}

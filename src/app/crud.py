@@ -4,6 +4,8 @@ from typing import List
 from fastapi import HTTPException
 from sqlalchemy.sql import delete
 
+from src.app.utils import get_hashed_password
+
 from . import models, schemas
 
 
@@ -32,7 +34,8 @@ def create_spender(db, spender: schemas.SpenderCreateNew):
     """
     Create a new spender in the database
     """
-    new_pass = spender.password + "hash"  # TODO: improve hash with JWT
+
+    new_pass = get_hashed_password(spender.password)
     new_spender = models.Spender(username=spender.username, password=new_pass)
     db.add(new_spender)
     db.commit()

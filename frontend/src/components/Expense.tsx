@@ -1,4 +1,4 @@
-import { Card, CardBody, Text } from '@chakra-ui/react'
+import { Card, CardBody, Text, Button } from '@chakra-ui/react'
 
 type Props = {
   expense: string
