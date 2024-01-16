@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { FormControl, Select,  FormLabel, NumberInput, Button, Input, NumberInputField, NumberIncrementStepper, NumberDecrementStepper, NumberInputStepper } from "@chakra-ui/react"
 
+import awaitPostRequestHandler from '../utils.ts'
+
 type Props = {
   isLoggedIn: Boolean
 }
@@ -12,19 +14,9 @@ const ExpenseForm = (props: Props) => {
 
   const clickHandler = async (event : any ) => {
    event.preventDefault() 
-    const response = await fetch("http://localhost:8000/spender/1/expenses/new/", {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      body: JSON.stringify({ amount: amount, category: category, description: description })
-    })
-    console.log(response)
+    const response =  awaitPostRequestHandler("http://localhost:8000/spender/1/expenses/new/", 
+      JSON.stringify({ amount: amount, category: category, description: description } )
+    )
   }
 
   return (
