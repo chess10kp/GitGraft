@@ -9,6 +9,7 @@ class ExpenseBase(BaseModel):
     description: str | None = Field(min_length=1)
 
 class ExpenseCreateNew(ExpenseBase):
+    category: str = Field(min_length=1)
     timestamp: datetime | None = None
 
 

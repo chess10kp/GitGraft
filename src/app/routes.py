@@ -32,7 +32,7 @@ def get_expenses(skip: int = 0, limit: int = 10, db=Depends(get_db)):
 def get_expense_by_user_id(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender_exists = crud.get_spender_by_id(db, spender_id)
     if not spender_exists:
-        raise HTTPException(404, "User to link to does not exist")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User to link to does not exist")
     return crud.get_expense_by_id(db, expense_id)
 
 
@@ -42,7 +42,7 @@ def insert_expense(
 ) -> Expense:
     spender = crud.get_spender_by_id(db, spender_id)
     if not spender:
-        raise HTTPException(400, "User to link to does not exist")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "User to link to does not exist")
     return crud.create_expense(db, expense, spender_id)
 
 
@@ -50,10 +50,10 @@ def insert_expense(
 def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender = crud.get_spender_by_id(db, spender_id)
     if not spender:
-        raise HTTPException(404, "User to delete expense from not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User to delete expense from not found")
     expense = crud.get_expense_by_id(db, expense_id)
     if not expense:
-        raise HTTPException(404, "Expense to delete not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Expense to delete not found")
     expense = crud.delete_expense(db, expense_id)
     return expense
 
@@ -82,7 +82,7 @@ async def login( username: str, password: str, db=Depends(get_db)) -> bool | dic
 def get_spender(db=Depends(get_db), limit: int = 10, skip: int = 0):
     spenders = crud.get_spenders(db, skip=skip, limit=limit)
     if not spenders:
-        raise HTTPException(status_code=404, detail="No users found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found")
     return spenders
 
 
@@ -90,7 +90,7 @@ def get_spender(db=Depends(get_db), limit: int = 10, skip: int = 0):
 def get_spender_by_id(spender_id: int, db=Depends(get_db)):
     spender = crud.get_spender_by_id(db, spender_id)
     if spender is None:
-        raise HTTPException(404, detail="User not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found")
     return spender
 
 

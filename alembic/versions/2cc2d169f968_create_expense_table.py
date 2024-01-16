@@ -25,14 +25,7 @@ def upgrade() -> None:
         sa.Column("amount", sa.Integer),
         sa.Column("description", sa.String()),
     )
-    op.drop_table("user")
 
 
 def downgrade() -> None:
     op.drop_table("expenses")
-    op.create_table(
-        "user",
-        sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("username", sa.String(), nullable=False),
-        sa.Column("password", sa.String(), nullable=False),
-    )

@@ -15,10 +15,11 @@ class Spender(Base):
 
 class Expense(Base):
     __tablename__ = "expenses"
-    id = Column(Integer, primary_key=True, index=True)
-    amount = Column(Integer, index=True)
-    description = Column(String, index=False)
-    timestamp = Column(String, index=True)
+    id = Column(Integer, primary_key=True, index=True, nullable=False)
+    amount = Column(Integer, index=True, nullable=False)
+    description = Column(String, index=False, nullable=False)
+    category = Column(String, index=True, nullable=True)
+    timestamp = Column(String, index=True, nullable=False)
     fk_expenses_id_spenders = Column(Integer, ForeignKey("spenders.id"))
 
     spender = relationship("Spender", back_populates="expenses")
