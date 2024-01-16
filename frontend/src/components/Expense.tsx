@@ -1,3 +1,4 @@
+import Logo from "../assets/logo.png"
 // v0 by Vercel.
 // https://v0.dev/t/GkNjwEC
 
@@ -17,13 +18,12 @@ const Expense = (props: Props) => {
   <aside className="sticky top-0 h-screen w-56 bg-gray-100 text-gray-800 p-4">
     <div className="flex items-center mb-4 space-x-1">
       <img
-        src="/placeholder.svg"
-        width="30"
+        src={Logo}
+        width="90"
         height="30"
         alt="Company Logo"
-        style={{aspectRatio: "30 / 30", objectFit: "cover"}}
+        style={{aspectRatio: "90 / 30", objectFit: "cover"}}
       />
-      <h1 className="text-lg font-medium">GitGraft</h1>
     </div>
     <nav className="space-y-2">
       <button className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500">

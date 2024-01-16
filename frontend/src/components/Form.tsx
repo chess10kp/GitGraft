@@ -12,10 +12,13 @@ const Form = (props: Props) => {
     <Box>
       <FormControl>
         <FormLabel>Username</FormLabel>
+         {/* @ts-ignore */}
         <Input ref={props.username} ></Input>
         <FormLabel>Password</FormLabel>
+         {/* @ts-ignore */}
         <Input ref={props.password} ></Input>
       </FormControl>
+         {/* @ts-ignore */}
       <Button colorScheme='green' onClick={props.clickHandler}>Login</Button>
     </Box>
   )
