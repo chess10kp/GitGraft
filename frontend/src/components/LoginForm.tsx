@@ -7,7 +7,7 @@ type Props = {
   clickHandler: Function
 }
 
-const Form = (props: Props) => {
+const LoginForm = (props: Props) => {
   return (
     <Box>
       <FormControl>
@@ -24,4 +24,4 @@ const Form = (props: Props) => {
   )
 }
 
-export default Form
+export default LoginForm

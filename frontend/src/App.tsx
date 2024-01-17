@@ -1,14 +1,16 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import {useDisclosure} from '@chakra-ui/react'
 
 import './App.css'
 
-import Form from './components/Form'
+import LoginForm from './components/LoginForm'
 import Expense from './components/Expense'
 import ExpenseForm from './components/ExpenseForm'
 import RegisterForm from './components/RegisterForm'
 
-type Props = {
+import UserLoggedIn from "./types"
+
+type Spender = {
   id: string // to use it as a key
   description: string
   amount: Number
@@ -17,17 +19,18 @@ type Props = {
 }
 
 function App() {
-  const username = useRef("")
-  const password = useRef("")
-  const [spenders, setSpenders] = useState([])
-  const isLoggedIn = useRef(false)
+  const username = useRef<string>("")
+  const password = useRef<string>("")
+  const [expenses, setExpenses] = useState<Array<string>>([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const loggedInUser : MutableRefObject<UserLoggedIn | null>  = useRef(null)
   
   const { isOpen, onOpen, onClose } = useDisclosure()
 
 
-  const find_spenders = async () => {
+  const find_spenders = async (id : Number) => {
     try {
-      const response = await fetch("http://localhost:8000/spender/1/expenses")
+      const response = await fetch(`http://localhost:8000/spender/${id}/expenses`)
       const data = await response.json()
       return data
     } catch (error) {
@@ -40,26 +43,35 @@ function App() {
       // @ts-ignore
       const response = await fetch(`http://localhost:8000/login/${username.current.value}/${password.current.value}`) 
       const data = await response.json()
-      console.log(typeof(data))
+      loggedInUser.current = data
+      setIsLoggedIn(true)
     } catch (error) {
       console.log("Error: ", error)
     }
   }
 
   useEffect(() => {
-    find_spenders()
-      .then(expense => setSpenders(expense))
+    if (isLoggedIn && loggedInUser.current) {
+    find_spenders(loggedInUser.current.id)
+      .then(expense => setExpenses(expense))
+    }
   }, [])
 
+  console.log(loggedInUser.current, isLoggedIn)
   return (
     <div className='app'>
       <RegisterForm isOpen={isOpen} onClose={onClose}></RegisterForm>
       <button onClick={onOpen}>Open login</button> 
-      <Form username={username} password={password} clickHandler={onLoginHandler}></Form>
-      <ExpenseForm isLoggedIn={isLoggedIn.current}></ExpenseForm>
-      {spenders.map((spender: Props) => (
+      {!isLoggedIn ? (
+            <LoginForm username={username} password={password} clickHandler={onLoginHandler}></LoginForm> 
+      ): 
         // @ts-ignore
-        <Expense key={spender.id} category={spender.category} timestamp={spender.timestamp} amount={spender.amount} description={spender.description}></Expense>
+       (<div>{loggedInUser.current.username}</div>)
+      }
+      <ExpenseForm isLoggedIn={isLoggedIn} user={loggedInUser.current}></ExpenseForm>
+      {expenses.map((expense: Spender) => (
+        // @ts-ignore
+        <Expense key={expense.id} category={expense.category} timestamp={expense.timestamp} amount={expense.amount} description={expense.description}></Expense>
       ))}
     </div>
   )
