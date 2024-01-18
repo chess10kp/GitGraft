@@ -9,6 +9,8 @@ import ExpenseForm from './components/ExpenseForm'
 import RegisterForm from './components/RegisterForm'
 
 import UserLoggedIn from "./types"
+import ExpenseHeader from './components/ExpenseHeader'
+import NavBar from './components/NavBar'
 
 type Spender = {
   id: string // to use it as a key
@@ -51,15 +53,16 @@ function App() {
   }
 
   useEffect(() => {
-    if (isLoggedIn && loggedInUser.current) {
-    find_spenders(loggedInUser.current.id)
+    if (isLoggedIn) {
+    find_spenders(loggedInUser.current?.id || -1)
       .then(expense => setExpenses(expense))
     }
   }, [])
 
-  console.log(loggedInUser.current, isLoggedIn)
+  console.log(expenses)
   return (
     <div className='app'>
+      <NavBar></NavBar>
       <RegisterForm isOpen={isOpen} onClose={onClose}></RegisterForm>
       <button onClick={onOpen}>Open login</button> 
       {!isLoggedIn ? (
@@ -68,11 +71,17 @@ function App() {
         // @ts-ignore
        (<div>{loggedInUser.current.username}</div>)
       }
+      {!isLoggedIn ? (
+      <>
       <ExpenseForm isLoggedIn={isLoggedIn} user={loggedInUser.current}></ExpenseForm>
-      {expenses.map((expense: Spender) => (
+      <ExpenseHeader>
+      {expenses.map((expense: any) => (
         // @ts-ignore
-        <Expense key={expense.id} category={expense.category} timestamp={expense.timestamp} amount={expense.amount} description={expense.description}></Expense>
+        <Expense key={expense.id} {...expense}/>
       ))}
+      </ExpenseHeader> 
+      </>
+      ) : null }
     </div>
   )
 }
