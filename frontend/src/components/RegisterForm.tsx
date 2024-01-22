@@ -45,12 +45,12 @@ const RegisterForm = (props: Props) => {
                 <ModalHeader>Register</ModalHeader>
                 <ModalCloseButton />
                 <FormControl isInvalid={checkRepeatPassword} isRequired>
-                    <FormLabel>Email address</FormLabel>
-                    <Input type='email' value={username} onChange={e => setUsername(e.target.value)} />
-                    <FormLabel>Password</FormLabel>
-                    <Input type='password' value={password} onChange={e => setPassword(e.target.value)} />
-                    <FormLabel>Repeat Password</FormLabel>
-                    <Input type='password' value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} />
+                    <FormLabel htmlFor='register_email'>Email address</FormLabel>
+                    <Input type='email' value={username} id='email' onChange={e => setUsername(e.target.value)} />
+                    <FormLabel htmlFor='register_password'>Password</FormLabel>
+                    <Input type='password' value={password} id="register_password" onChange={e => setPassword(e.target.value)} />
+                    <FormLabel htmlFor='register_repeat_password'>Repeat Password</FormLabel>
+                    <Input type='password' value={repeatPassword} id="register_repeat_password" onChange={e => setRepeatPassword(e.target.value)} />
                     <FormHelperText> </FormHelperText>
                     <FormErrorMessage>Passwords do not match </FormErrorMessage>
                 </FormControl>
