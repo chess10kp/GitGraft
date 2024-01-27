@@ -3,13 +3,13 @@ import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import './App.css'
 
 import Expense from './components/Expense'
-import ExpenseForm from './components/ExpenseForm'
 
 import UserLoggedIn from "./types"
 import ExpenseHeader from './components/ExpenseHeader'
 import NavBar from './components/NavBar'
 
 import { AvatarGenerator } from 'random-avatar-generator'
+import Hero from './components/Hero'
 
 function App() {
   const username : MutableRefObject<HTMLInputElement> = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>
@@ -20,11 +20,13 @@ function App() {
 
 
 
-  const find_expenses = async (id: Number) => {
+  const find_expenses = (id: Number) => {
     try {
-      const response = await fetch(`http://localhost:8000/spender/${id}/expenses`)
-      const data = await response.json()
-      return data
+      fetch(`http://localhost:8000/spender/${id}/expenses`).then(
+        res => res.json()
+      ).then(
+        data => setExpenses(data)
+      )
     } catch (error) {
       console.log("Error: ", error)
     }
@@ -45,41 +47,50 @@ function App() {
       loggedInUser.current = data
 			generateAvatar(loggedInUser)
       setIsLoggedIn(true)
+      console.log(isLoggedIn)
       return true;
     } catch (error) {
       console.log("Error: ", error)
-												return false;
+          return false;
     }
   }
 
   useEffect(() => {
-    console.log("Login: " + isLoggedIn)
     if (isLoggedIn) {
       find_expenses(loggedInUser.current?.id || -1)
-        .then(expense => setExpenses(expense))
     }
   }, [])
 
+
   return (
     <div className='app'>
-      <NavBar isLoggedIn={isLoggedIn}
-        user={loggedInUser.current}
-        loginPasswordRef={password}
-        loginUsernameRef={username}
-        onLoginHandler={onLoginHandler}>
-        {isLoggedIn ? (
-          <>
-            <ExpenseHeader>
-              {expenses.map((expense: any) => (
-                // @ts-ignore
-                <Expense key={expense.id} {...expense} />
-              ))}
-            </ExpenseHeader>
-          </>
-        ) : null}
-      </NavBar>
+      {/* <NavBar isLoggedIn={isLoggedIn} */}
+      {/*   user={loggedInUser.current} */}
+      {/*   loginPasswordRef={password} */}
+      {/*   loginUsernameRef={username} */}
+      {/*   onLoginHandler={onLoginHandler}> */}
+      {/* <></>  */}
+      {/* </NavBar> */}
+      {/* woeifjwoeifjweoij */}
+      {/* erijgoeigjoerijgo */}
+      {/* eirjgoeirjgeoirj */}
+      {/*   {isLoggedIn ? ( */}
+      {/*     <> */}
+      {/*       <ExpenseHeader> */}
+      {/*         {expenses.map((expense: any) => ( */}
+      {/*           // @ts-ignore */}
+      {/*           <Expense key={expense.id} {...expense} /> */}
+      {/*         ))} */}
+      {/*       </ExpenseHeader> */}
+      {/*     </> */}
+      {/*   ) : null} */}
+      <Hero/>
     </div>
   )
 }
 
 export default App
+
+
+
+

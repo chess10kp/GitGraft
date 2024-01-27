@@ -18,10 +18,9 @@ import {
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 
-import { FaBell } from 'react-icons/fa';
-import { AiOutlineTeam, AiOutlineHome } from 'react-icons/ai';
+import { AiOutlineHome } from 'react-icons/ai';
 import { MdAttachMoney } from "react-icons/md";
-import { BsFolder2, BsCalendarCheck } from 'react-icons/bs';
+import { BsCalendarCheck } from 'react-icons/bs';
 import { FiMenu } from 'react-icons/fi';
 
 import User from '../types';
@@ -45,7 +44,12 @@ export default function NavBar(props: Props) {
 
 
   const onLoginHandler = () => {
-    const res = props.onLoginHandler().then()
+    props.onLoginHandler().then((res) => {
+      if (res) {
+        onLoginClose()
+      }
+    }
+    )
   }
 
   return (
@@ -65,7 +69,7 @@ export default function NavBar(props: Props) {
           px="4"
           borderBottomWidth="1px"
           borderColor={useColorModeValue('inherit', 'gray.700')}
-          bg={useColorModeValue('gray.100', 'gray.800')}
+          bg={useColorModeValue('gray.50', 'gray.800')}
           boxShadow="sm"
           h="14"
         >
@@ -77,7 +81,7 @@ export default function NavBar(props: Props) {
             size="md"
           />
           <Flex align="center" >
-            {props.isLoggedIn ?
+            {props.isLoggedIn && props.user?.username ?
               (
                 <>
                 {props.user.username}
@@ -91,7 +95,7 @@ export default function NavBar(props: Props) {
               ) :
               (
                 <>
-                  <Button bg={'black', 'white'} onClick={onRegisterOpen}>Register</Button>
+                  <Button bg={'gray.50'} color={'black'} onClick={onRegisterOpen}>Register</Button>
                   <Button bg={'black'} color={'white'} onClick={onLoginOpen}>Login</Button>
                 </>
               )
@@ -122,28 +126,28 @@ const SidebarContent = ({ ...props }: BoxProps) => (
     pb="10"
     overflowX="hidden"
     overflowY="auto"
-    bg={useColorModeValue('gray.100', 'gray.40')}
+    bg={useColorModeValue('gray.50', 'gray.40')}
     borderColor={useColorModeValue('inherit', 'gray.800')}
     borderRightWidth="2px"
     w="60"
     {...props}
   >
     <Flex px="4" py="5" align="center">
-      <Icon as={MdAttachMoney} h={7} w={7} />
+      <Icon as={MdAttachMoney} h={7} w={7}/>
       <Text
         fontSize="2xl"
         ml="2"
         mt="1"
         color={useColorModeValue('brand.500', 'white')}
         fontWeight="semibold"
-        borderColor={useColorModeValue('inherit', 'gray.800')}
+        width={'100%'}
       >
         GitGraft
       </Text>
     </Flex>
     <Flex direction="column" as="nav" fontSize="md" color="gray.600" aria-label="Main Navigation">
       <NavItem icon={AiOutlineHome}>Dashboard</NavItem>
-      <NavItem icon={BsCalendarCheck}>Profile</NavItem>
+      <NavItem icon={BsCalendarCheck}>Dashboard</NavItem>
     </Flex>
   </Box>
 );

@@ -1,8 +1,4 @@
 from datetime import datetime
-from typing import List
-
-from fastapi import HTTPException
-from sqlalchemy.sql import delete
 
 from src.app.utils import get_hashed_password
 
@@ -27,14 +23,14 @@ def get_spenders(db, skip: int = 0, limit: int = 10):
     """
     Get multiple spenders
     """
-    return db.query(models.Spender).offset(skip).limit(limit).all()
+    spenders = db.query(models.Spender).offset(skip).limit(limit).all()
+    return spenders
 
 
 def create_spender(db, spender: schemas.SpenderCreateNew):
     """
     Create a new spender in the database
     """
-
     new_pass = get_hashed_password(spender.password)
     new_spender = models.Spender(username=spender.username, password=new_pass)
     db.add(new_spender)
@@ -70,12 +66,13 @@ def get_expense_by_id(db, expense_id: int) -> models.Expense | None:
     return db.query(models.Expense).filter(models.Expense.id == expense_id).first()
 
 
-def create_expense(db, expense: schemas.ExpenseBase, spender_id: int):
+def create_expense(db, expense: schemas.ExpenseCreateNew, spender_id: int):
     """
     Create a new expense
     """
-    expense.dict()["timestamp"] = datetime.now()
-    new_expense = models.Expense(**expense.dict(), fk_expenses_id_spenders=spender_id)
+    new_expense_data = expense.dict()
+    new_expense_data["timestamp"] = datetime.now()
+    new_expense = models.Expense(**new_expense_data, fk_expenses_id_spenders=spender_id)
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)

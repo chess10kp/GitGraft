@@ -44,6 +44,7 @@ const RegisterForm = (props: Props) => {
             <ModalContent>
                 <ModalHeader>Register</ModalHeader>
                 <ModalCloseButton />
+                <ModalBody>
                 <FormControl isInvalid={checkRepeatPassword} isRequired>
                     <FormLabel htmlFor='register_email'>Email address</FormLabel>
                     <Input type='email' value={username} id='email' onChange={e => setUsername(e.target.value)} />
@@ -54,10 +55,9 @@ const RegisterForm = (props: Props) => {
                     <FormHelperText> </FormHelperText>
                     <FormErrorMessage>Passwords do not match </FormErrorMessage>
                 </FormControl>
-                <ModalBody>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={onSubmitHandler} variant='ghost'>Register</Button>
+                    <Button onClick={onSubmitHandler} bgColor={'black'} color={'white'} variant='solid'>Register</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

@@ -4,9 +4,15 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from src.app import crud, models, schemas  # noqa: None
+from src.app import crud, models  # noqa: None
 from src.app.database import SessionLocal, engine
-from src.app.schemas import Expense, ExpenseCreateNew
+from src.app.schemas import (
+    Expense,
+    ExpenseCreateNew,
+    SpenderCreateNew,
+    SpenderCreateNewResponse,
+    SpenderResponse,
+)
 from src.app.utils import get_hashed_password, verify_hashed_password
 
 models.Base.metadata.create_all(bind=engine)
@@ -42,7 +48,9 @@ def insert_expense(
 ) -> Expense:
     spender = crud.get_spender_by_id(db, spender_id)
     if not spender:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "User to link to does not exist")
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, "User to link to does not exist"
+        )
     return crud.create_expense(db, expense, spender_id)
 
 
@@ -50,7 +58,9 @@ def insert_expense(
 def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender = crud.get_spender_by_id(db, spender_id)
     if not spender:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "User to delete expense from not found")
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, "User to delete expense from not found"
+        )
     expense = crud.get_expense_by_id(db, expense_id)
     if not expense:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Expense to delete not found")
@@ -67,22 +77,29 @@ def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
 # ) -> List[Expense]:
 #     return data
 
+
 @router.get("/login/{username}/{password}/")
-async def login( username: str, password: str, db=Depends(get_db)) -> bool | dict: 
+async def login(
+    username: str, password: str, db=Depends(get_db)
+) -> SpenderCreateNewResponse:
     user = crud.get_spender_by_username(db, username)
-    if user is None : 
+    if user is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User does not exist")
     logged_in = verify_hashed_password(password, str(user.password))
-    return user if logged_in else logged_in
+    return user if logged_in else None
 
 
 @router.get(
     "/spender/",
 )
-def get_spender(db=Depends(get_db), limit: int = 10, skip: int = 0):
+def get_spender(
+    db=Depends(get_db), limit: int = 10, skip: int = 0
+) -> List[SpenderResponse]:
     spenders = crud.get_spenders(db, skip=skip, limit=limit)
     if not spenders:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No users found"
+        )
     return spenders
 
 
@@ -95,8 +112,10 @@ def get_spender_by_id(spender_id: int, db=Depends(get_db)):
 
 
 @router.post("/spender/new")
-def create_spender(new_spender: schemas.SpenderCreateNew, db=Depends(get_db)):
+def create_spender(new_spender: SpenderCreateNew, db=Depends(get_db)):
     existing_spender = crud.get_spender_by_username(db, new_spender.username)
     if existing_spender:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="User with this username already exists")
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, detail="User with this username already exists"
+        )
     return crud.create_spender(db, new_spender)
