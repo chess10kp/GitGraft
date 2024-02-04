@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.app.routes import router
 
 app = FastAPI(
-    title="Expense Tracker",
-    description="Expense Tracker",
+    title="GitGraft",
+    description="Expense Tracker with Git integration",
     version="0.0.1",
 )
 

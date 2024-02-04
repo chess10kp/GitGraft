@@ -1,40 +1,73 @@
-import { useRef } from 'react'
-import { Modal, ModalOverlay, FormLabel, Input, Box, FormControl, Select, ModalContent, ModalBody } from "@chakra-ui/react"
+import { Modal, ModalHeader, NumberInput, ModalCloseButton, NumberInputField, ModalOverlay, FormLabel, Input, Box, FormControl, Select, ModalContent, ModalBody, Stack } from "@chakra-ui/react"
 import { useDisclosure, Button } from "@chakra-ui/react"
 
-import ExpenseForm from './ExpenseForm'
+import { useState } from 'react'
+import awaitPostRequestHandler from "../utils"
 
 type Props = {
-        spender_id: Number
+  spender_id: Number
 }
 
 const InputForm = (props: Props) => {
-        const { isOpen, onOpen, onClose } = useDisclosure()
-        const description = useRef('')
-        const amount = useRef(0)
-        const category = useRef('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-        const onClickHandler = () => {
-                fetch(`http://localhost:8000/spender/${props.spender_id}/expenses/new`)
-        }
+  const [expenseCategory, setCategory] = useState("")
+  const [expenseName, setExpenseName] = useState<string>("")
+  const [expenseDescription, setExpenseDescription] = useState<string>("")
+  const [expenseAmount, setAmount] = useState<string>("")
 
-        return (
-                <>
-                        <Button onClick={onOpen}></Button>
-                        <Modal isOpen={isOpen} onClose={onClose}>
-                                <ModalOverlay />
-                                <ModalBody>
-                                        <ModalContent>
-                                                <Box m={4}>
-                                                        <ExpenseForm isLoggedIn={isLoggedIn} user={loggedInUser.current}></ExpenseForm>
-                                                        <Button bg={'gray.700'} color={'white'} mt={2} onClick={onClickHandler}>Login</Button>
-                                                </Box>
-                                        </ModalContent>
+  const onCreateExpenseHandler = () => {
+    awaitPostRequestHandler(`http://localhost:8000/spender/${props.spender_id}/expenses/new`, 
+      JSON.stringify({
+        amount: expenseAmount, 
+        category: expenseCategory,
+        description: expenseDescription
+      }) ,"POST") 
+  }
 
-                                </ModalBody>
-                        </Modal>
-                </>
-        )
+  return (
+    <>
+      <Button onClick={onOpen}></Button>
+      <Box>
+        <Modal onClose={onClose} isOpen={true}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add Expense</ModalHeader>
+            <ModalCloseButton onClick={onClose} />
+            <ModalBody>
+              <FormControl m={2}>
+                <FormLabel>Expense Name</FormLabel>
+                <Input type='text' value={expenseName} placeholder='Ex: Rent' isRequired onChange={e => setExpenseName(e.target.value)}></Input>
+                <FormLabel my={2}>Description</FormLabel>
+                <Input type='text' value={expenseDescription} placeholder='Ex: I need a place to live' isRequired onChange={e => setExpenseDescription(e.target.value)}></Input>
+                <Stack direction={'row'}>
+                  <Stack>
+                    <FormLabel my={2}>Amount</FormLabel>
+                    <NumberInput min={0} >
+                      <NumberInputField value={expenseAmount} onChange={e => setAmount(e.target.value)}></NumberInputField>
+                    </NumberInput>
+                  </Stack>
+                  <Stack>
+                    <FormLabel my={2} >Category</FormLabel>
+                    <Select value={expenseCategory} onChange={e => setCategory(e.target.value)} placeholder="Category">
+                      <option value={'Work'}>Work</option>
+                      <option value={'Home'}>Home</option>
+                      <option value={'Food'}>Food</option>
+                      <option value={'School'}>School</option>
+                      <option value={'Miscellaneous'}>Miscellaneous</option>
+                      <option value={'Travel'}>Travel</option>
+                    </Select>
+                  </Stack>
+                </Stack>
+                <Button colorScheme='' mt={4} onClick={onCreateExpenseHandler} bg={'black'} color={"white"}>Create Expense</Button>
+              </FormControl>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </Box>
+
+    </>
+  )
 }
 
 export default InputForm

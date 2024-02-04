@@ -7,9 +7,11 @@ import Expense from './components/Expense'
 import UserLoggedIn from "./types"
 import ExpenseHeader from './components/ExpenseHeader'
 import NavBar from './components/NavBar'
+import Hero from './components/Hero'
+import AddForm from './components/AddForm'
+import InputForm from './components/InputForm'
 
 import { AvatarGenerator } from 'random-avatar-generator'
-import Hero from './components/Hero'
 
 import awaitPostRequestHandler from './utils'
 
@@ -94,23 +96,24 @@ function App() {
       {isLoggedIn ?
         (
           <>
-            <NavBar isLoggedIn={isLoggedIn}
-              user={loggedInUser.current}
-              loginPasswordRef={password}
-              loginUsernameRef={username}
-              onLoginHandler={onLoginHandler}>
-              <>
-                <ExpenseHeader>
-                  {expenses.map((expense: any) => (
-                    // @ts-ignore
-                    <Expense key={expense.id}
-                      {...expense}
-                      onDeleteHandler={onDeleteExpenseHandler}
-                    />
-                  ))}
-                </ExpenseHeader>
-              </>
-            </NavBar>
+            {/* <NavBar isLoggedIn={isLoggedIn} */}
+            {/*   user={loggedInUser.current} */}
+            {/*   loginPasswordRef={password} */}
+            {/*   loginUsernameRef={username} */}
+            {/*   onLoginHandler={onLoginHandler}> */}
+            {/*   <> */}
+            {/*     <ExpenseHeader> */}
+            {/*       {expenses.map((expense: any) => ( */}
+            {/*         // @ts-ignore */}
+            {/*         <Expense key={expense.id} */}
+            {/*           {...expense} */}
+            {/*           onDeleteHandler={onDeleteExpenseHandler} */}
+            {/*         /> */}
+            {/*       ))} */}
+            {/*     </ExpenseHeader> */}
+            {/*   </> */}
+            {/* </NavBar> */}
+            <InputForm spender_id={loggedInUser.current?.id || -1}/>
           </>
         ) :
         (
