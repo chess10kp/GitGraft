@@ -13,7 +13,6 @@ const ExpenseHeader = (props: Props) => {
             <Th>Description</Th>
             <Th>Amount</Th>
             <Th>Category</Th>
-            <Th>Time</Th>
           </Tr>
         </Thead>
         <Tbody>

@@ -83,6 +83,11 @@ def delete_expense(db, expense_id: int):
     """
     Delete an expense
     """
-    expense = db.query(models.Expense).filter(models.Expense.id == expense_id).first()
-    db.delete(expense)
-    return expense
+    try: 
+        expense = db.query(models.Expense).filter(models.Expense.id == expense_id).first()
+        db.delete(expense)
+        db.commit()
+        return expense
+    except Exception as e:
+        print(f"Error deleting expense: {e})")
+        db.rollback()

@@ -38,7 +38,8 @@ def get_expenses(skip: int = 0, limit: int = 10, db=Depends(get_db)):
 def get_expense_by_user_id(spender_id: int, expense_id: int, db=Depends(get_db)):
     spender_exists = crud.get_spender_by_id(db, spender_id)
     if not spender_exists:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "User to link to does not exist")
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            "User to link to does not exist")
     return crud.get_expense_by_id(db, expense_id)
 
 
@@ -56,6 +57,7 @@ def insert_expense(
 
 @router.delete("/spender/{spender_id}/expenses/delete/{expense_id}")
 def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
+    print("hi")
     spender = crud.get_spender_by_id(db, spender_id)
     if not spender:
         raise HTTPException(
@@ -63,7 +65,8 @@ def delete_expense(spender_id: int, expense_id: int, db=Depends(get_db)):
         )
     expense = crud.get_expense_by_id(db, expense_id)
     if not expense:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Expense to delete not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            "Expense to delete not found")
     expense = crud.delete_expense(db, expense_id)
     return expense
 
@@ -84,7 +87,8 @@ async def login(
 ) -> SpenderCreateNewResponse:
     user = crud.get_spender_by_username(db, username)
     if user is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User does not exist")
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            detail="User does not exist")
     logged_in = verify_hashed_password(password, str(user.password))
     return user if logged_in else None
 

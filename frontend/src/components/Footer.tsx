@@ -1,18 +1,15 @@
-
 import {
   Box,
   chakra,
   Container,
   Stack,
-  Text,
   useColorModeValue,
   VisuallyHidden,
   Flex,
-  Icon
 } from '@chakra-ui/react'
+
 import { FaGithub } from 'react-icons/fa'
 import { ReactNode } from 'react'
-import { MdAttachMoney } from "react-icons/md";
 
 
 const SocialButton = ({
@@ -49,8 +46,7 @@ const SocialButton = ({
 export default function HeroFooter() {
   return (
     <Box
-      bg={useColorModeValue('#FD9500', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}>
+      color={useColorModeValue('black', 'gray.200')} bg={useColorModeValue('gray.700', 'gray.200')}>
       <Container
         as={Stack}
         minW={'100%'}
@@ -58,19 +54,8 @@ export default function HeroFooter() {
         spacing={4}
         justify={{ base: 'space-between', md: 'space-between' }}
         align={{ base: 'center', md: 'center' }}>
-    <Flex px="4" py="5" align="center">
-      <Icon as={MdAttachMoney} h={5} w={5}/>
-      <Text
-        fontSize="1xl"
-        ml="2"
-        mt="1"
-        color={useColorModeValue('brand.500', 'white')}
-        fontWeight="semibold"
-        width={'100%'}
-      >
-            GitGraft
-      </Text>
-    </Flex>
+        <Flex px="4" py="5" align="center">
+        </Flex>
         <Stack direction={'row'} spacing={6}>
           <SocialButton label={'Github'} href={'https://github.com/chess10kp/GitGraft'}>
             <FaGithub />
