@@ -1,4 +1,4 @@
-import { Tr, Td, IconButton } from "@chakra-ui/react"
+import { Tr, Td, IconButton, Text } from "@chakra-ui/react"
 import { DeleteIcon } from "@chakra-ui/icons"
 
 type Props = {
@@ -17,7 +17,7 @@ const Expense = (props: Props) => {
 
   return (
     <Tr>
-      <Td>{props.description}</Td>
+      <Td><Text>{props.description}</Text><Text fontSize={'0.5em'}>{props.timestamp.slice(0,10)}</Text></Td>
       <Td isNumeric>{props.amount.toString()}</Td>
       <Td><span className="px-2 py-1 bg-red-200 text-red-800 rounded-md">
         <svg
@@ -40,7 +40,6 @@ const Expense = (props: Props) => {
       <Td>
         <IconButton aria-label="delete task" onClick={() => onDeleteHandler( props.id)} icon={<DeleteIcon />} ></IconButton>
       </Td>
-      <Td>{props.timestamp}</Td>
     </Tr>
   )
 }

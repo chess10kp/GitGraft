@@ -6,6 +6,9 @@ import awaitPostRequestHandler from "../utils"
 
 type Props = {
   spender_id: Number
+  isOpen: Boolean 
+  onOpen: () => void 
+  onClose: () => void
 }
 
 const InputForm = (props: Props) => {
@@ -16,20 +19,22 @@ const InputForm = (props: Props) => {
   const [expenseDescription, setExpenseDescription] = useState<string>("")
   const [expenseAmount, setAmount] = useState<string>("")
 
-  const onCreateExpenseHandler = () => {
-    awaitPostRequestHandler(`http://localhost:8000/spender/${props.spender_id}/expenses/new`, 
+  const onCreateExpenseHandler = async () => {
+    const response  = await awaitPostRequestHandler(`http://localhost:8000/spender/${props.spender_id}/expenses/new`, 
       JSON.stringify({
         amount: expenseAmount, 
         category: expenseCategory,
         description: expenseDescription
       }) ,"POST") 
+    const data = await response.json()
+    console.log(data)
   }
 
   return (
     <>
       <Button onClick={onOpen}></Button>
       <Box>
-        <Modal onClose={onClose} isOpen={true}>
+        <Modal onClose={onClose} isOpen={isOpen}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Add Expense</ModalHeader>

@@ -17,10 +17,7 @@ const awaitPostRequestHandler = async (url: string, requestString: string | null
     }
     return response
   } else {
-    const response = await fetch(url, {
-      method: method,
-      mode: 'cors',
-      cache: 'no-cache',
+    const response = await fetch(url, { method: method, mode: 'cors', cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
         'accept': 'application/json',
