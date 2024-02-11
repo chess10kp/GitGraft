@@ -1,5 +1,6 @@
 import { Tr, Td, IconButton, Text } from "@chakra-ui/react"
 import { DeleteIcon } from "@chakra-ui/icons"
+import {Dispatch, SetStateAction} from 'react'
 
 type Props = {
   id: Number
@@ -9,16 +10,18 @@ type Props = {
   category: string
   timestamp: string
   onDeleteHandler : (expense_id: Number) => void
+  setUpdate: Dispatch<SetStateAction<boolean>>
 }
 const Expense = (props: Props) => {
   const onDeleteHandler = (expense_id: Number) => {
     props.onDeleteHandler(expense_id)
+    props.setUpdate((prev) => !prev)
   }
 
   return (
     <Tr>
       <Td><Text>{props.description}</Text><Text fontSize={'0.5em'}>{props.timestamp.slice(0,10)}</Text></Td>
-      <Td isNumeric>{props.amount.toString()}</Td>
+      <Td>{props.amount.toString()}</Td>
       <Td><span className="px-2 py-1 bg-red-200 text-red-800 rounded-md">
         <svg
           xmlns="http://www.w4.org/2000/svg"

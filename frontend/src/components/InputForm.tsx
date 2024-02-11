@@ -1,7 +1,7 @@
 import { Modal, ModalHeader, NumberInput, ModalCloseButton, NumberInputField, ModalOverlay, FormLabel, Input, Box, FormControl, Select, ModalContent, ModalBody, Stack } from "@chakra-ui/react"
 import { useDisclosure, Button } from "@chakra-ui/react"
 
-import { useState } from 'react'
+import { useState, Dispatch, SetStateAction } from 'react'
 import awaitPostRequestHandler from "../utils"
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
   isOpen: Boolean 
   onOpen: () => void 
   onClose: () => void
+  setUpdate: Dispatch<SetStateAction<boolean>>
 }
 
 const InputForm = (props: Props) => {
@@ -20,14 +21,20 @@ const InputForm = (props: Props) => {
   const [expenseAmount, setAmount] = useState<string>("")
 
   const onCreateExpenseHandler = async () => {
+    if (!expenseAmount || !expenseCategory || !expenseDescription) {
+        alert("Please fill out all fields")
+    }
     const response  = await awaitPostRequestHandler(`http://localhost:8000/spender/${props.spender_id}/expenses/new`, 
       JSON.stringify({
         amount: expenseAmount, 
         category: expenseCategory,
         description: expenseDescription
       }) ,"POST") 
-    const data = await response.json()
-    console.log(data)
+    if (!response.ok) {
+      alert("Error creating expense. Is the server running?")
+    }
+    onClose()
+    props.setUpdate((prev) => !prev)
   }
 
   return (

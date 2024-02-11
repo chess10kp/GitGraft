@@ -14,6 +14,7 @@ import {
   useColorModeValue
 } from '@chakra-ui/react';
 
+import {useState} from 'react'
 
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
@@ -43,10 +44,11 @@ export default function NavBar(props: Props) {
   const { isOpen: isRegisterOpen, onOpen: onRegisterOpen, onClose: onRegisterClose } = useDisclosure()
   const { isOpen: isLoginOpen, onOpen: onLoginOpen, onClose: onLoginClose } = useDisclosure()
   const { isOpen: isNewExpenseOpen, onOpen: onNewExpenseOpen, onClose: onNewExpenseClose } = useDisclosure()
+  const [update, setUpdate] = useState(false)
 
 
 
-  const onNewExpenseClick = () => {  
+  const onNewExpenseClick = () => {
     onNewExpenseOpen()
   }
   const onLoginHandler = () => {
@@ -66,7 +68,7 @@ export default function NavBar(props: Props) {
       <Box ml={{ base: 0, md: 0 }} transition=".3s ease">
         <Flex
           as="header"
-          justifyContent={{ base: 'space-between', md: 'flex-end' }}
+          justifyContent={{ base: 'space-between', md: 'space-between' }}
           w="100"
           px="4"
           borderBottomWidth="1px"
@@ -75,21 +77,31 @@ export default function NavBar(props: Props) {
           boxShadow="sm"
           h="14"
         >
-          <IconButton
-            aria-label="Menu"
-            display={{ base: 'inline-flex', md: 'inline-flex' }}
-            onClick={onSideBarOpen}
-            icon={<FiMenu />}
-            size="md"
-          />
+          <Flex flexDirection={"row"} align={'center'}>
+            <IconButton
+              aria-label="Menu"
+              display={{ base: 'inline-flex', md: 'inline-flex' }}
+              onClick={onSideBarOpen}
+              icon={<FiMenu />}
+              size="md"
+            />
+        <InputForm spender_id={props.user?.id || -1} 
+              isOpen={isNewExpenseOpen} 
+              onOpen={onNewExpenseOpen} 
+              onClose={onNewExpenseClose}
+              setUpdate={setUpdate} 
+              update={update} />
+            <MdAttachMoney></MdAttachMoney>
+            <Text paddingY={0}> GitGraft</Text>
+          </Flex>
           <Flex align="center" >
-              {props.user?.username}
-              <Avatar
-                ml="4"
-                size="sm"
-                src="https://avatars2.githubusercontent.com/u/37842853?v=4"
-                cursor="pointer"
-              />
+            {props.user?.username}
+            <Avatar
+              ml="4"
+              size="sm"
+              src="https://avatars2.githubusercontent.com/u/37842853?v=4"
+              cursor="pointer"
+            />
           </Flex>
         </Flex>
 
@@ -101,7 +113,6 @@ export default function NavBar(props: Props) {
         <Box as="main" p={14} minH="25rem" bg={useColorModeValue('auto', 'gray.800')}>
           {props.children}
         </Box>
-        <InputForm spender_id={props.user?.id || -1} isOpen={isNewExpenseOpen} onOpen={onNewExpenseOpen} onClose={onNewExpenseClose}></InputForm>
       </Box>
     </Box>
   );

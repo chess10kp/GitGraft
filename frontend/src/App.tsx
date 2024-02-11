@@ -18,6 +18,7 @@ function App() {
   const password: MutableRefObject<HTMLInputElement> = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>
   const [expenses, setExpenses] = useState<Array<string>>([])
   const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [update, setUpdate] = useState(false)
   const loggedInUser: MutableRefObject<UserLoggedIn | null> = useRef({ id: 1, username: "shivani", password: "$2b$12$pn.WVVUJAk5OqLdQrF2wd.TLpQUjoukPAtqKk.srATROquDiBGUyy", avatarUrl: "https://avataaars.io/?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Red&clotheType=ShirtScoopNeck&eyeType=Dizzy&eyebrowType=AngryNatural&facialHairColor=Platinum&facialHairType=MoustacheMagnum&hairColor=Red&hatColor=PastelGreen&mouthType=Eating&skinColor=DarkBrown&topType=ShortHairDreads02" })
 
 
@@ -26,17 +27,7 @@ function App() {
   const onDeleteExpenseHandler = (expense_id: Number) => {
     awaitPostRequestHandler(`http://localhost:8000/spender/${loggedInUser.current?.id}/expenses/delete/${expense_id}`, null, "DELETE")
     find_expenses(loggedInUser.current?.id || -1)
-  }
-
-  const onCreateExpenseHandler = (amount:Number, description: string, category:string) => {
-    awaitPostRequestHandler(`http://localhost:8000/${loggedInUser.current?.id}/expenses/new`, 
-    JSON.stringify(
-        {
-        amount: amount, 
-        description: description, 
-        category: category
-        }
-      ))
+    setUpdate((prev) => !prev)
   }
 
   const find_expenses = (id: Number) => {
@@ -105,6 +96,7 @@ function App() {
                     // @ts-ignore
                     <Expense key={expense.id}
                       {...expense}
+                      setUpdate={setUpdate}
                       onDeleteHandler={onDeleteExpenseHandler}
                     />
                   ))}
