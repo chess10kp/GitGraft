@@ -33,3 +33,19 @@ def test_delete_one():
         assert result.status_code == 200
         result = client.get("/expenses")
         assert result.json() == []
+
+
+def test_create_many_expenses(): 
+    with TestClient(app) as client: 
+        client.post(
+            "/expenses/new",
+            json={"amount": 1, "description": "this is a description"},
+        )
+        client.post(
+            "/expenses/new",
+            json={"amount": 2, "description": "this is 2 description"},
+        )
+        client.post(
+            "/expenses/new",
+            json={"amount": 3, "description": "this is 3 description"},
+        )

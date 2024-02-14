@@ -12,6 +12,7 @@ import Hero from './components/Hero'
 import { AvatarGenerator } from 'random-avatar-generator'
 
 import awaitPostRequestHandler from './utils'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const username: MutableRefObject<HTMLInputElement> = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>
@@ -20,8 +21,22 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [update, setUpdate] = useState(false)
   const loggedInUser: MutableRefObject<UserLoggedIn | null> = useRef({ id: 1, username: "shivani", password: "$2b$12$pn.WVVUJAk5OqLdQrF2wd.TLpQUjoukPAtqKk.srATROquDiBGUyy", avatarUrl: "https://avataaars.io/?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Red&clotheType=ShirtScoopNeck&eyeType=Dizzy&eyebrowType=AngryNatural&facialHairColor=Platinum&facialHairType=MoustacheMagnum&hairColor=Red&hatColor=PastelGreen&mouthType=Eating&skinColor=DarkBrown&topType=ShortHairDreads02" })
+  const [showDashboard, setShowDashboard] = useState(true)
 
 
+  const onCreateExpenseHandler = async (expenseAmount:string, expenseCategory:string, expenseDescription:string) => { 
+    const response  = await awaitPostRequestHandler(`http://localhost:8000/spender/${loggedInUser.current?.id || -1}/expenses/new`, 
+      JSON.stringify({
+        amount: expenseAmount, 
+        category: expenseCategory,
+        description: expenseDescription
+      }) ,"POST") 
+    if (!response.ok) {
+      alert("Error creating expense. Is the server running?")
+    }
+    setUpdate((prev) => !prev)
+
+  }
 
 
   const onDeleteExpenseHandler = (expense_id: Number) => {
@@ -34,17 +49,14 @@ function App() {
     try {
       fetch(`http://localhost:8000/spender/${id}/expenses`).then(
         res => {
-          console.log(res)
           return res.json()
         }
       ).then(
         data => {
           setExpenses(data)
-          console.log(data)
         }
       )
     } catch (error) {
-      console.log("Error: ", error)
     }
   }
 
@@ -65,7 +77,6 @@ function App() {
       setIsLoggedIn(true)
       return true;
     } catch (error) {
-      console.log("Error: ", error)
       return false;
     }
   }
@@ -73,12 +84,9 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       find_expenses(loggedInUser.current?.id || -1)
+      console.log("rerendered")
     }
-  }, [])
-
-  useEffect(() => {
-    console.log(expenses)
-  }, [expenses])
+  }, [update])
 
   return (
     <div className='app'>
@@ -89,7 +97,14 @@ function App() {
               user={loggedInUser.current}
               loginPasswordRef={password}
               loginUsernameRef={username}
-              onLoginHandler={onLoginHandler}>
+              onCreateExpenseHandler={onCreateExpenseHandler}
+              onLoginHandler={onLoginHandler}
+              setShowDashboard={setShowDashboard}>
+              {showDashboard ? 
+                <Dashboard
+                  expenses={expenses}
+              ></Dashboard> : 
+                expenses.length ?  
               <>
                 <ExpenseHeader>
                   {expenses.map((expense: any) => (
@@ -102,6 +117,7 @@ function App() {
                   ))}
                 </ExpenseHeader>
               </>
+              : null} 
             </NavBar>
           </>
         ) :

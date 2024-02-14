@@ -14,7 +14,7 @@ import {
   useColorModeValue
 } from '@chakra-ui/react';
 
-import {useState} from 'react'
+import {Dispatch, SetStateAction, useState} from 'react'
 
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
@@ -27,15 +27,17 @@ import { FiMenu } from 'react-icons/fi';
 
 import User from '../types';
 
-import { MutableRefObject } from 'react';
+import { MutableRefObject, useEffect } from 'react';
 
 type Props = {
   loginUsernameRef: MutableRefObject<HTMLInputElement>
   loginPasswordRef: MutableRefObject<HTMLInputElement>
   onLoginHandler: () => Promise<boolean>
+  onCreateExpenseHandler: (expenseAmount: string, expenseDescription: string, expenseCategory: string) => void
   isLoggedIn: Boolean
   user: User | null
   children: (any | null)
+  setShowDashboard : Dispatch<SetStateAction<boolean>>
 }
 
 
@@ -44,13 +46,23 @@ export default function NavBar(props: Props) {
   const { isOpen: isRegisterOpen, onOpen: onRegisterOpen, onClose: onRegisterClose } = useDisclosure()
   const { isOpen: isLoginOpen, onOpen: onLoginOpen, onClose: onLoginClose } = useDisclosure()
   const { isOpen: isNewExpenseOpen, onOpen: onNewExpenseOpen, onClose: onNewExpenseClose } = useDisclosure()
-  const [update, setUpdate] = useState(false)
+  const [update, setUpdate] = useState(true)
 
 
+  useEffect(() => {
+    console.log("navbar rerendered")
+  }, [update])
 
   const onNewExpenseClick = () => {
     onNewExpenseOpen()
   }
+  const handleExpenseCreate = (expenseAmount: string, expenseDescription: string, expenseCategory: string) => { 
+    props.onCreateExpenseHandler(expenseAmount, expenseDescription, expenseCategory)
+  }
+
+  const onShowdasshboardClick = () => { 
+    props.setShowDashboard((prev) => !prev)
+  } 
   const onLoginHandler = () => {
     props.onLoginHandler().then((res) => {
       if (res) {
@@ -63,7 +75,7 @@ export default function NavBar(props: Props) {
   return (
     <Box as="section" bg={useColorModeValue('white', 'gray.40')} minH="100vh">
       <NavItem icon={AiOutlineHome}>Home</NavItem>
-      <NavItem icon={BsCalendarCheck}>Dashboard</NavItem>
+      <NavItem icon={BsCalendarCheck} onClick={onShowdasshboardClick}>Dashboard</NavItem>
       <NavItem icon={BsCalendarCheck} onClick={onNewExpenseClick}>New Expense</NavItem>
       <Box ml={{ base: 0, md: 0 }} transition=".3s ease">
         <Flex
@@ -89,8 +101,7 @@ export default function NavBar(props: Props) {
               isOpen={isNewExpenseOpen} 
               onOpen={onNewExpenseOpen} 
               onClose={onNewExpenseClose}
-              setUpdate={setUpdate} 
-              update={update} />
+              onCreateExpenseHandler={handleExpenseCreate} />
             <MdAttachMoney></MdAttachMoney>
             <Text paddingY={0}> GitGraft</Text>
           </Flex>

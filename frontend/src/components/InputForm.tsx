@@ -1,45 +1,39 @@
 import { Modal, ModalHeader, NumberInput, ModalCloseButton, NumberInputField, ModalOverlay, FormLabel, Input, Box, FormControl, Select, ModalContent, ModalBody, Stack } from "@chakra-ui/react"
-import { useDisclosure, Button } from "@chakra-ui/react"
+import { useDisclosure, IconButton, Button } from "@chakra-ui/react"
 
 import { useState, Dispatch, SetStateAction } from 'react'
-import awaitPostRequestHandler from "../utils"
+import { PlusSquareIcon } from "@chakra-ui/icons"
 
 type Props = {
   spender_id: Number
   isOpen: Boolean 
   onOpen: () => void 
   onClose: () => void
-  setUpdate: Dispatch<SetStateAction<boolean>>
+  onCreateExpenseHandler: (expenseAmount: string, expenseDescription: string, expenseCategory: string) => void
 }
 
 const InputForm = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [expenseCategory, setCategory] = useState("")
-  const [expenseName, setExpenseName] = useState<string>("")
+  const [expenseCategory, setExpenseCategory] = useState("")
   const [expenseDescription, setExpenseDescription] = useState<string>("")
-  const [expenseAmount, setAmount] = useState<string>("")
+  const [expenseAmount, setExpenseAmount] = useState<string>("")
 
-  const onCreateExpenseHandler = async () => {
+  const onCreateExpenseClick = async () => {
     if (!expenseAmount || !expenseCategory || !expenseDescription) {
         alert("Please fill out all fields")
+        return
     }
-    const response  = await awaitPostRequestHandler(`http://localhost:8000/spender/${props.spender_id}/expenses/new`, 
-      JSON.stringify({
-        amount: expenseAmount, 
-        category: expenseCategory,
-        description: expenseDescription
-      }) ,"POST") 
-    if (!response.ok) {
-      alert("Error creating expense. Is the server running?")
-    }
+    props.onCreateExpenseHandler(expenseAmount, expenseDescription, expenseCategory)
     onClose()
-    props.setUpdate((prev) => !prev)
+    setExpenseAmount("")
+    setExpenseCategory("")
+    setExpenseDescription("")
   }
 
   return (
     <>
-      <Button onClick={onOpen}></Button>
+      <IconButton aria-label="menu" icon={<PlusSquareIcon/>} onClick={onOpen}></IconButton>
       <Box>
         <Modal onClose={onClose} isOpen={isOpen}>
           <ModalOverlay />
@@ -48,30 +42,28 @@ const InputForm = (props: Props) => {
             <ModalCloseButton onClick={onClose} />
             <ModalBody>
               <FormControl m={2}>
-                <FormLabel>Expense Name</FormLabel>
-                <Input type='text' value={expenseName} placeholder='Ex: Rent' isRequired onChange={e => setExpenseName(e.target.value)}></Input>
                 <FormLabel my={2}>Description</FormLabel>
-                <Input type='text' value={expenseDescription} placeholder='Ex: I need a place to live' isRequired onChange={e => setExpenseDescription(e.target.value)}></Input>
+                <Input type='text' value={expenseDescription} placeholder='Rent' isRequired onChange={e => setExpenseDescription(e.target.value)}></Input>
                 <Stack direction={'row'}>
                   <Stack>
                     <FormLabel my={2}>Amount</FormLabel>
-                    <NumberInput min={0} >
-                      <NumberInputField value={expenseAmount} onChange={e => setAmount(e.target.value)}></NumberInputField>
+                    <NumberInput min={0} isRequired>
+                      <NumberInputField value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)}></NumberInputField>
                     </NumberInput>
                   </Stack>
                   <Stack>
                     <FormLabel my={2} >Category</FormLabel>
-                    <Select value={expenseCategory} onChange={e => setCategory(e.target.value)} placeholder="Category">
+                    <Select value={expenseCategory} onChange={e => setExpenseCategory(e.target.value)}>
+                      <option value={'Miscellaneous'}>Misc</option>
                       <option value={'Work'}>Work</option>
                       <option value={'Home'}>Home</option>
                       <option value={'Food'}>Food</option>
                       <option value={'School'}>School</option>
-                      <option value={'Miscellaneous'}>Miscellaneous</option>
                       <option value={'Travel'}>Travel</option>
                     </Select>
                   </Stack>
                 </Stack>
-                <Button colorScheme='' mt={4} onClick={onCreateExpenseHandler} bg={'black'} color={"white"}>Create Expense</Button>
+                <Button colorScheme='' mt={4} onClick={onCreateExpenseClick} bg={'black'} color={"white"}>Create Expense</Button>
               </FormControl>
             </ModalBody>
           </ModalContent>
