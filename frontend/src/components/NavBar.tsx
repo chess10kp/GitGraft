@@ -76,7 +76,6 @@ export default function NavBar(props: Props) {
     <Box as="section" bg={useColorModeValue('white', 'gray.40')} minH="100vh">
       <NavItem icon={AiOutlineHome}>Home</NavItem>
       <NavItem icon={BsCalendarCheck} onClick={onShowdasshboardClick}>Dashboard</NavItem>
-      <NavItem icon={BsCalendarCheck} onClick={onNewExpenseClick}>New Expense</NavItem>
       <Box ml={{ base: 0, md: 0 }} transition=".3s ease">
         <Flex
           as="header"
