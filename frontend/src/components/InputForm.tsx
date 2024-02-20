@@ -12,23 +12,34 @@ type Props = {
   onCreateExpenseHandler: (expenseAmount: string, expenseDescription: string, expenseCategory: string) => void
 }
 
+const ExpenseTypes = Object.freeze({
+  EXPENSE: "expenses",
+  SAVING: "savings"
+});
+
 const InputForm = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [expenseCategory, setExpenseCategory] = useState("")
   const [expenseDescription, setExpenseDescription] = useState<string>("")
   const [expenseAmount, setExpenseAmount] = useState<string>("")
+  const [expenseType, setExpenseType] = useState(ExpenseTypes.EXPENSE.toString())
 
   const onCreateExpenseClick = async () => {
     if (!expenseAmount || !expenseCategory || !expenseDescription) {
         alert("Please fill out all fields")
         return
     }
-    props.onCreateExpenseHandler(expenseAmount, expenseDescription, expenseCategory)
+    const signedExpenseAmount = (expenseType == ExpenseTypes.SAVING ? expenseAmount : -expenseAmount).toString()
+    props.onCreateExpenseHandler(signedExpenseAmount, expenseDescription, expenseCategory)
     onClose()
     setExpenseAmount("")
     setExpenseCategory("")
     setExpenseDescription("")
+  }
+
+  const onExpenseTypeChangeHandler = (value: string) => {
+     setExpenseType(value) 
   }
 
   return (
@@ -43,7 +54,10 @@ const InputForm = (props: Props) => {
             <ModalBody>
               <FormControl m={2}>
                 <FormLabel my={2}>Description</FormLabel>
-                <Input type='text' value={expenseDescription} placeholder='Rent' isRequired onChange={e => setExpenseDescription(e.target.value)}></Input>
+                <Input type='text' value={expenseDescription} 
+                  placeholder={ expenseType == "expense" ?  "Who did you pay?" : "Who paid you?" } isRequired onChange={e => 
+                  setExpenseDescription(e.target.value)}>
+                </Input>
                 <Stack direction={'row'}>
                   <Stack>
                     <FormLabel my={2}>Amount</FormLabel>
@@ -60,6 +74,14 @@ const InputForm = (props: Props) => {
                       <option value={'Food'}>Food</option>
                       <option value={'School'}>School</option>
                       <option value={'Travel'}>Travel</option>
+                    </Select>
+                  </Stack>
+                  <Stack>
+                    <FormLabel my={2}>Type</FormLabel>
+                    <Select value={expenseType} defaultValue={ExpenseTypes.EXPENSE} onChange={e => onExpenseTypeChangeHandler(e.target.value) }>
+                      <option value={ExpenseTypes.EXPENSE}>Expense</option>
+                      <option value={ExpenseTypes.SAVING}>Credit</option>
+                      
                     </Select>
                   </Stack>
                 </Stack>

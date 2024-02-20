@@ -99,9 +99,9 @@ export default function PieChart(props: Props) {
           {(pie) =>  
             pie.arcs.map((arc, index) => ( 
               <g key={`arc-${index}`}>
-              <path d={pie.path(arc)} 
+              <path d={pie.path(arc) || undefined} 
                     fill={`${colors[index % colors.length]}`}        
-                    onMouseOver={(e, index) => handleMouseOver(e, arc.data.category)} 
+                    onMouseOver={(e) => handleMouseOver(e, arc.data.category)} 
                     onMouseOut={hideTooltip} /> 
               </g>
             ))}
