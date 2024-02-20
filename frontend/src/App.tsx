@@ -84,7 +84,6 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       find_expenses(loggedInUser.current?.id || -1)
-      console.log("rerendered")
     }
   }, [update])
 

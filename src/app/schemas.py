@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class ExpenseBase(BaseModel):
-    amount: int = Field(ge=0)
+    amount: int 
     description: str | None = Field(min_length=1)
 
 

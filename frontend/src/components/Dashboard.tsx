@@ -44,7 +44,7 @@ const Dashboard = (props: Props) => {
         <Stat>
           <StatLabel>Savings</StatLabel>
           <StatNumber>${t_saving}</StatNumber>
-          <StatHelpText>{net > 0 ? `${t_saving * 100 / t_expense} percent higher than expenses` : null}</StatHelpText>
+          <StatHelpText>{net > 0 ? `${-t_saving * 100 / t_expense} percent higher than expenses` : null}</StatHelpText>
           <PieChart transactions={t_savings}></PieChart>
         </Stat>
       </Flex>

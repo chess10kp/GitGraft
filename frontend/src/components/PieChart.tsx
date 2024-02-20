@@ -32,9 +32,7 @@ export default function PieChart(props: Props) {
   })
 
   const handleMouseOver = (e, datum:string) => {
-    console.log(datum)
     const coords = localPoint(e.target.ownerSVGElement, e);
-    console.log(coords)
     showTooltip({
       tooltipLeft: coords.x, 
       tooltipTop: coords.y, 
@@ -67,7 +65,6 @@ export default function PieChart(props: Props) {
     return categories
   }
   const categoryObj = categories()
-  console.log(sample)
   
 
   const width = 300;

@@ -11,10 +11,11 @@ import {
   IconButton,
   useDisclosure,
   DrawerOverlay,
-  useColorModeValue
+  useColorModeValue,
+  DrawerCloseButton
 } from '@chakra-ui/react';
 
-import {Dispatch, SetStateAction, useState} from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
@@ -37,7 +38,7 @@ type Props = {
   isLoggedIn: Boolean
   user: User | null
   children: (any | null)
-  setShowDashboard : Dispatch<SetStateAction<boolean>>
+  setShowDashboard: Dispatch<SetStateAction<boolean>>
 }
 
 
@@ -48,34 +49,40 @@ export default function NavBar(props: Props) {
   const { isOpen: isNewExpenseOpen, onOpen: onNewExpenseOpen, onClose: onNewExpenseClose } = useDisclosure()
   const [update, setUpdate] = useState(true)
 
-
-  useEffect(() => {
-    console.log("navbar rerendered")
-  }, [update])
-
   const onNewExpenseClick = () => {
     onNewExpenseOpen()
   }
-  const handleExpenseCreate = (expenseAmount: string, expenseDescription: string, expenseCategory: string) => { 
+
+  const handleExpenseCreate = (expenseAmount: string, expenseDescription: string, expenseCategory: string) => {
     props.onCreateExpenseHandler(expenseAmount, expenseDescription, expenseCategory)
   }
 
-  const onShowdasshboardClick = () => { 
+  const onShowdasshboardClick = () => {
     props.setShowDashboard((prev) => !prev)
-  } 
+  }
+
   const onLoginHandler = () => {
     props.onLoginHandler().then((res) => {
       if (res) {
         onLoginClose()
       }
-    }
-    )
+    })
   }
 
   return (
     <Box as="section" bg={useColorModeValue('white', 'gray.40')} minH="100vh">
-      <NavItem icon={AiOutlineHome}>Home</NavItem>
-      <NavItem icon={BsCalendarCheck} onClick={onShowdasshboardClick}>Dashboard</NavItem>
+      <Drawer
+        isOpen={isSidebarOpen}
+        placement='top'
+        onClose={onSideBarClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <NavItem icon={AiOutlineHome}>Home</NavItem>
+          <NavItem icon={BsCalendarCheck} onClick={onShowdasshboardClick}>Dashboard</NavItem>
+        </DrawerContent>
+      </Drawer>
+
       <Box ml={{ base: 0, md: 0 }} transition=".3s ease">
         <Flex
           as="header"
@@ -96,9 +103,9 @@ export default function NavBar(props: Props) {
               icon={<FiMenu />}
               size="md"
             />
-        <InputForm spender_id={props.user?.id || -1} 
-              isOpen={isNewExpenseOpen} 
-              onOpen={onNewExpenseOpen} 
+            <InputForm spender_id={props.user?.id || -1}
+              isOpen={isNewExpenseOpen}
+              onOpen={onNewExpenseOpen}
               onClose={onNewExpenseClose}
               onCreateExpenseHandler={handleExpenseCreate} />
             <MdAttachMoney></MdAttachMoney>

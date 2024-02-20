@@ -78,10 +78,9 @@ const InputForm = (props: Props) => {
                   </Stack>
                   <Stack>
                     <FormLabel my={2}>Type</FormLabel>
-                    <Select value={expenseType} defaultValue={ExpenseTypes.EXPENSE} onChange={e => onExpenseTypeChangeHandler(e.target.value) }>
+                    <Select defaultValue={ExpenseTypes.EXPENSE} onChange={e => onExpenseTypeChangeHandler(e.target.value) }>
                       <option value={ExpenseTypes.EXPENSE}>Expense</option>
                       <option value={ExpenseTypes.SAVING}>Credit</option>
-                      
                     </Select>
                   </Stack>
                 </Stack>
