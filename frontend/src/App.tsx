@@ -24,13 +24,13 @@ function App() {
   const [showDashboard, setShowDashboard] = useState(true)
 
 
-  const onCreateExpenseHandler = async (expenseAmount:string, expenseCategory:string, expenseDescription:string) => { 
-    const response  = await awaitPostRequestHandler(`http://localhost:8000/spender/${loggedInUser.current?.id || -1}/expenses/new`, 
+  const onCreateExpenseHandler = async (expenseAmount: string, expenseCategory: string, expenseDescription: string) => {
+    const response = await awaitPostRequestHandler(`http://localhost:8000/spender/${loggedInUser.current?.id || -1}/expenses/new`,
       JSON.stringify({
-        amount: expenseAmount, 
+        amount: expenseAmount,
         category: expenseCategory,
         description: expenseDescription
-      }) ,"POST") 
+      }), "POST")
     if (!response.ok) {
       alert("Error creating expense. Is the server running?")
     }
@@ -99,24 +99,24 @@ function App() {
               onCreateExpenseHandler={onCreateExpenseHandler}
               onLoginHandler={onLoginHandler}
               setShowDashboard={setShowDashboard}>
-              {showDashboard ? 
+              {showDashboard ?
                 <Dashboard
                   expenses={expenses}
-              ></Dashboard> : 
-                expenses.length ?  
-              <>
-                <ExpenseHeader>
-                  {expenses.map((expense: any) => (
-                    // @ts-ignore
-                    <Expense key={expense.id}
-                      {...expense}
-                      setUpdate={setUpdate}
-                      onDeleteHandler={onDeleteExpenseHandler}
-                    />
-                  ))}
-                </ExpenseHeader>
-              </>
-              : null} 
+                ></Dashboard> :
+                expenses.length ?
+                  <>
+                    <ExpenseHeader>
+                      {expenses.map((expense: any) => (
+                        // @ts-ignore
+                        <Expense key={expense.id}
+                          {...expense}
+                          setUpdate={setUpdate}
+                          onDeleteHandler={onDeleteExpenseHandler}
+                        />
+                      ))}
+                    </ExpenseHeader>
+                  </>
+                  : null}
             </NavBar>
           </>
         ) :
