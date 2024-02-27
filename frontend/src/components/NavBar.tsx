@@ -58,7 +58,7 @@ export default function NavBar(props: Props) {
   }
 
   const onShowdasshboardClick = () => {
-    props.setShowDashboard((prev) => !prev)
+    props.setShowDashboard(true)
   }
 
   const onLoginHandler = () => {
@@ -67,6 +67,9 @@ export default function NavBar(props: Props) {
         onLoginClose()
       }
     })
+  }
+  const onShowHomeClick = () => {
+    props.setShowDashboard(false)
   }
 
   return (
@@ -77,8 +80,7 @@ export default function NavBar(props: Props) {
         onClose={onSideBarClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <NavItem icon={AiOutlineHome}>Home</NavItem>
+          <NavItem icon={AiOutlineHome} onClick={onShowHomeClick}>Home</NavItem>
           <NavItem icon={BsCalendarCheck} onClick={onShowdasshboardClick}>Dashboard</NavItem>
         </DrawerContent>
       </Drawer>
@@ -135,15 +137,10 @@ export default function NavBar(props: Props) {
   );
 }
 
-const SidebarContent = ({ ...props }: BoxProps, children_button: any) => (
-  <Box>
-  </Box>
-);
-
 const NavItem = (props: any) => {
   const color = useColorModeValue('gray.600', 'gray.300');
 
-  const { icon, children } = props;
+  const { icon, onClick, children } = props;
   return (
     <Flex
       align="center"
@@ -153,6 +150,7 @@ const NavItem = (props: any) => {
       role="group"
       fontWeight="semibold"
       transition=".15s ease"
+      onClick={onClick || (() => { })}
       color={useColorModeValue('inherit', 'gray.400')}
       _hover={{
         bg: useColorModeValue('gray.300', 'gray.900'),

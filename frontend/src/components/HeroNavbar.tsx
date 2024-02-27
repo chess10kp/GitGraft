@@ -48,7 +48,9 @@ const SocialButton = ({
 export default function HeroFooter(props: any) {
   return (
     <Box
-      color={useColorModeValue('gray.700', 'gray.200')}>
+      color={useColorModeValue('black', 'black')}
+      bg={useColorModeValue('black', 'whiteAlpha.100')}
+    >
       <Container
         as={Stack}
         minW={'100%'}
@@ -56,24 +58,21 @@ export default function HeroFooter(props: any) {
         spacing={4}
         justify={{ base: 'space-between', md: 'space-between' }}
         align={{ base: 'center', md: 'center' }}>
-    <Flex px="4" py="5" align="center">
-      <Icon as={MdAttachMoney} h={5} w={5}/>
-      <Text
-        fontSize="1xl"
-        ml="2"
-        mt="1"
-        color={useColorModeValue('brand.500', 'white')}
-        fontWeight="semibold"
-        width={'100%'}
-      >
+        <Flex px="4" py="5" align="center">
+          <Icon as={MdAttachMoney} h={5} w={5} color={useColorModeValue('gray.100', 'white')} />
+          <Text
+            fontSize="1xl"
+            ml="2"
+            mt="1"
+            color={useColorModeValue('gray.100', 'white')}
+            fontWeight="semibold"
+            width={'100%'}
+          >
             GitGraft
-      </Text>
-    </Flex>
+          </Text>
+        </Flex>
         <Stack direction={'row'} spacing={6}>
           {props.children}
-          <SocialButton label={'Github'} href={'https://github.com/chess10kp/GitGraft'}>
-            <FaGithub />
-          </SocialButton>
         </Stack>
       </Container>
     </Box>

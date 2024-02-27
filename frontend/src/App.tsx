@@ -18,9 +18,9 @@ function App() {
   const username: MutableRefObject<HTMLInputElement> = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>
   const password: MutableRefObject<HTMLInputElement> = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>
   const [expenses, setExpenses] = useState<Array<string>>([])
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [update, setUpdate] = useState(false)
-  const loggedInUser: MutableRefObject<UserLoggedIn | null> = useRef({ id: 1, username: "shivani", password: "$2b$12$pn.WVVUJAk5OqLdQrF2wd.TLpQUjoukPAtqKk.srATROquDiBGUyy", avatarUrl: "https://avataaars.io/?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Red&clotheType=ShirtScoopNeck&eyeType=Dizzy&eyebrowType=AngryNatural&facialHairColor=Platinum&facialHairType=MoustacheMagnum&hairColor=Red&hatColor=PastelGreen&mouthType=Eating&skinColor=DarkBrown&topType=ShortHairDreads02" })
+  const loggedInUser: MutableRefObject<UserLoggedIn | null> = useRef(null)
   const [showDashboard, setShowDashboard] = useState(true)
 
 

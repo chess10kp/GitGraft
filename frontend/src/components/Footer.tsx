@@ -46,7 +46,7 @@ const SocialButton = ({
 export default function HeroFooter() {
   return (
     <Box
-      color={useColorModeValue('black', 'gray.200')} bg={useColorModeValue('gray.700', 'gray.200')}>
+      color={useColorModeValue('white', 'gray.200')} bg={useColorModeValue('black', 'black')}>
       <Container
         as={Stack}
         minW={'100%'}
